@@ -1,17 +1,17 @@
 import argparse
 import random
-from sympy import isprime, gcd, mod_inverse
 from typing import Tuple
 
+from sympy import gcd, mod_inverse, randprime
 
-def generate_prime(bits: int = 1024) -> int:
-    while True:
-        potential_prime = random.getrandbits(bits)
-        if isprime(potential_prime):
-            return potential_prime
+
+def generate_prime(n: int = 1024) -> int:
+    """ Generates random [big enough] prime number. """
+    return randprime(2 ** (n - 1), 2 ** n - 1)
 
 
 def get_coprime_num(num: int) -> int:
+    """ Calculates the coprime for the given number. """
     coprime_num = random.randint(2, num - 1)
     while gcd(coprime_num, num) != 1:
         coprime_num = random.randint(2, num - 1)
@@ -19,6 +19,7 @@ def get_coprime_num(num: int) -> int:
 
 
 def generate_keypair() -> Tuple[Tuple[int, int], Tuple[int, int]]:
+    """ Calculates a pair of keys: public & private. """
     p = generate_prime()
     q = generate_prime()
     n = p * q
@@ -29,11 +30,13 @@ def generate_keypair() -> Tuple[Tuple[int, int], Tuple[int, int]]:
 
 
 def encrypt(msg: str, pub_key: Tuple[int, int]) -> int:
+    """ Encrypts the message using the given public key. """
     e, n = pub_key
     return pow(int(msg), e, n)
 
 
 def decrypt(enc_msg: int, prt_key: Tuple[int, int]) -> str:
+    """ Decrypts the encrypted message using the given private key. """
     d, n = prt_key
     return str(pow(enc_msg, d, n))
 
